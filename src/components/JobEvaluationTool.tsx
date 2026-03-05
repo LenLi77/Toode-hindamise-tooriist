@@ -375,13 +375,14 @@ export default function JobEvaluationTool() {
   function exportAllCSV() {
     if (savedJobs.length === 0) return;
     const allFactors = factorGroups.flatMap(g => g.factors);
-    const header = ["Company","Date","Job Title","Total Points","Grade",
+    const header = ["Company","Date","Evaluator","Job Title","Total Points","Grade",
       ...allFactors.map(f => `${f.name} (pts)`),
-      ...allFactors.map(f => `${f.name} (level)`)];
+      ...allFactors.map(f => `${f.name} (level)`),
+      "Comment"];
     const rows = [header, ...savedJobs.map(job => {
-      const pts = job.groupBreakdown.flatMap(g => g.factors.map(f => f.points ?? "—"));
-      const lvls = job.groupBreakdown.flatMap(g => g.factors.map(f => f.level ?? "—"));
-      return [job.companyName, job.evalDate, job.jobTitle, job.totalPoints, job.grade, ...pts, ...lvls];
+      const pts = job.groupBreakdown.flatMap((g: any) => g.factors.map((f: any) => f.points ?? "—"));
+      const lvls = job.groupBreakdown.flatMap((g: any) => g.factors.map((f: any) => f.level ?? "—"));
+      return [job.companyName, job.evalDate, job.evaluatorName ?? "", job.jobTitle, job.totalPoints, job.grade, ...pts, ...lvls, job.comment ?? ""];
     })];
     const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
     const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
@@ -722,6 +723,23 @@ export default function JobEvaluationTool() {
                   style={{ width: "100%", padding: "8px 11px", border: "1px solid #c8bfb0", borderRadius: 4, fontSize: 12, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box", resize: "vertical", lineHeight: 1.5 }} />
               </div>
 
+              {/* Save button at top — shown when all selected */}
+              {allSelected && (
+                <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginBottom: 12 }}>
+                  {editingJobId ? (
+                    <button onClick={saveEdits}
+                      style={{ padding: "7px 16px", background: "#5a7a3a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", color: "#fff", fontWeight: "500" }}>
+                      {t("Salvesta muudatused ✓","Save Changes ✓")}
+                    </button>
+                  ) : (
+                    <button onClick={saveAndNext}
+                      style={{ padding: "7px 16px", background: "#1c2b3a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", color: "#e8e0d4", fontWeight: "500" }}>
+                      {t("Salvesta ja hinda järgmist →","Save & Evaluate Next →")}
+                    </button>
+                  )}
+                </div>
+              )}
+
               {/* Live score bar */}
               <div style={{ background: "#fff", border: "1px solid #d8cfC0", borderRadius: 5, padding: "12px 16px", marginBottom: 20, display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
                 <div>
@@ -870,108 +888,94 @@ export default function JobEvaluationTool() {
                   </div>
                 ) : (
                   <>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: "55vh", overflowY: "auto", paddingRight: 2 }}>
-                      {savedJobs.map(job => {
-                        const isExp = expandedJob === job.id;
-                        const gc = GRADE_COLORS[job.gradeNum] || "#888";
-                        return (
-                          <div key={job.id} style={{ background: "#fff", border: editingJobId===job.id?"2px solid #8ab870":"1px solid #e0d8ce", borderRadius: 5, overflow: "hidden" }}>
-                            <div style={{ padding: "10px 12px", cursor: "pointer", display: "flex", gap: 9, alignItems: "flex-start" }}
-                              onClick={() => setExpandedJob(isExp ? null : job.id)}>
-                              <div style={{ width: 34, height: 34, borderRadius: 4, background: gc, color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: "bold", fontFamily: "sans-serif", flexShrink: 0, lineHeight: 1 }}>
-                                <span style={{ fontSize: 7, opacity: 0.75 }}>G</span>
-                                <span>{job.gradeNum}</span>
-                              </div>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontSize: 12, fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{job.jobTitle || <span style={{ color: "#bbb" }}>—</span>}</div>
-                                <div style={{ fontSize: 10, color: "#999", fontFamily: "sans-serif", marginTop: 1 }}>{job.companyName}{job.companyName&&" · "}{job.evalDate}</div>
-                                <div style={{ marginTop: 4, display: "flex", alignItems: "center", gap: 6 }}>
-                                  <MiniBar value={job.totalPoints} color={gc} />
-                                </div>
-                              </div>
-                              <div style={{ flexShrink: 0, textAlign: "right" }}>
-                                <div style={{ fontSize: 15, fontWeight: "bold", color: "#1c2b3a" }}>{job.totalPoints}</div>
-                                <div style={{ fontSize: 8, color: "#bbb", fontFamily: "sans-serif" }}>/ 1000</div>
-                              </div>
-                            </div>
-                            {isExp && (
-                              <div style={{ borderTop: "1px solid #e0d8ce", padding: "10px 12px", background: "#faf8f5" }}>
-                                {job.groupBreakdown.map(g => (
-                                  <div key={g.name} style={{ marginBottom: 7 }}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, fontFamily: "sans-serif", marginBottom: 2 }}>
-                                      <span style={{ color: g.color, fontWeight: "700" }}>{g.name}</span>
-                                      <span style={{ color: "#888" }}>{g.earned}/{g.maxPoints}p</span>
-                                    </div>
-                                    {g.factors.map(f => (
-                                      <div key={f.name} style={{ display: "flex", justifyContent: "space-between", fontSize: 10, fontFamily: "sans-serif", color: "#666", padding: "1px 0 1px 8px" }}>
-                                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 145 }}>{f.name}</span>
-                                        <span style={{ flexShrink: 0, marginLeft: 4, color: "#444" }}>{f.levelCode ?? `T${f.level}`} · {f.points}p</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                ))}
-                                {job.comment?.trim() && (
-                                  <div style={{ margin: "6px 0", padding: "7px 10px", background: "#f5f0e8", border: "1px solid #e0d8ce", borderRadius: 4, fontSize: 10, fontFamily: "Georgia,serif", color: "#555", fontStyle: "italic", lineHeight: 1.5 }}>
-                                    {job.comment}
-                                  </div>
-                                )}
-                                {job.evaluatorName && (
-                                  <div style={{ fontSize: 9, fontFamily: "sans-serif", color: "#aaa", marginBottom: 4 }}>
-                                    {t("Hindaja","Evaluator")}: {job.evaluatorName}
-                                  </div>
-                                )}
-                                <div style={{ display: "flex", gap: 6, marginTop: 6, flexWrap: "wrap" }}>
-                                  <button onClick={() => exportPDF([job])}
-                                    style={{ padding: "4px 9px", background: "#6b1a1a", border: "none", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#f5e8e8" }}>
-                                    PDF
-                                  </button>
-                                  <button onClick={() => loadJobForEditing(job)}
-                                    style={{ padding: "4px 9px", background: editingJobId===job.id?"#e8f0e0":"none", border: "1px solid #b0c8a0", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#4a7a30", fontWeight: editingJobId===job.id?"700":"normal" }}>
-                                    {editingJobId===job.id ? t("✏ Muutmisel...","✏ Editing...") : t("✏ Muuda","✏ Edit")}
-                                  </button>
-                                  <button onClick={() => removeJob(job.id)}
-                                    style={{ padding: "4px 9px", background: "none", border: "1px solid #e0c0c0", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#a05050" }}>
-                                    {t("Kustuta","Remove")}
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {savedJobs.length >= 2 && (
-                      <div style={{ marginTop: 12, background: "#fff", border: "1px solid #e0d8ce", borderRadius: 5, overflow: "hidden" }}>
-                        <div style={{ padding: "8px 12px", background: "#1c2b3a", color: "#9aaa8a", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.14em", fontFamily: "sans-serif" }}>
-                          {t("Võrdlus — kõrgeimast madalaimani","Ranking — highest to lowest")}
-                        </div>
-                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "sans-serif" }}>
-                          <thead>
-                            <tr style={{ background: "#f5f0eb" }}>
-                              <th style={{ padding: "6px 10px", textAlign: "left", fontWeight: "600", color: "#666", borderBottom: "1px solid #e0d8ce", fontSize: 10 }}>#</th>
-                              <th style={{ padding: "6px 10px", textAlign: "left", fontWeight: "600", color: "#666", borderBottom: "1px solid #e0d8ce", fontSize: 10 }}>{t("Ametikoht","Job")}</th>
-                              <th style={{ padding: "6px 10px", textAlign: "center", fontWeight: "600", color: "#666", borderBottom: "1px solid #e0d8ce", fontSize: 10 }}>{t("P","Pts")}</th>
-                              <th style={{ padding: "6px 10px", textAlign: "center", fontWeight: "600", color: "#666", borderBottom: "1px solid #e0d8ce", fontSize: 10 }}>{t("Aste","Grade")}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {[...savedJobs].sort((a,b) => b.totalPoints-a.totalPoints).map((job,i) => {
-                              const gc = GRADE_COLORS[job.gradeNum]||"#888";
-                              return (
-                                <tr key={job.id} style={{ borderBottom: "1px solid #ede8e0", background: i%2===0?"#fff":"#faf8f5" }}>
-                                  <td style={{ padding: "5px 10px", color: "#bbb", fontSize: 10 }}>{i+1}</td>
-                                  <td style={{ padding: "5px 10px", color: "#333", maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 11 }}>{job.jobTitle||"—"}</td>
-                                  <td style={{ padding: "5px 10px", textAlign: "center", fontWeight: "bold", color: "#1c2b3a", fontSize: 12 }}>{job.totalPoints}</td>
-                                  <td style={{ padding: "5px 10px", textAlign: "center" }}>
-                                    <span style={{ display: "inline-block", padding: "2px 7px", background: gc, color: "#fff", borderRadius: 3, fontSize: 10, fontFamily: "sans-serif", fontWeight: "600" }}>{job.grade}</span>
+                    {/* Unified ranked table with expandable rows */}
+                    <div style={{ background: "#fff", border: "1px solid #e0d8ce", borderRadius: 5, overflow: "hidden", maxHeight: "70vh", overflowY: "auto" }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "sans-serif" }}>
+                        <thead style={{ position: "sticky", top: 0, zIndex: 1 }}>
+                          <tr style={{ background: "#1c2b3a" }}>
+                            <th style={{ padding: "7px 8px", textAlign: "left", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 22 }}>#</th>
+                            <th style={{ padding: "7px 8px", textAlign: "left", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em" }}>{t("Ametikoht","Job")}</th>
+                            <th style={{ padding: "7px 8px", textAlign: "center", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 44 }}>{t("P","Pts")}</th>
+                            <th style={{ padding: "7px 8px", textAlign: "center", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 36 }}>{t("Aste","Grade")}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {[...savedJobs].sort((a,b) => b.totalPoints-a.totalPoints).map((job, i) => {
+                            const isExp = expandedJob === job.id;
+                            const gc = GRADE_COLORS[job.gradeNum] || "#888";
+                            return (
+                              <>
+                                {/* Main row */}
+                                <tr key={job.id}
+                                  onClick={() => setExpandedJob(isExp ? null : job.id)}
+                                  style={{ borderBottom: isExp ? "none" : "1px solid #ede8e0", background: isExp ? "#f0ebe3" : editingJobId===job.id ? "#f0f7ea" : i%2===0?"#fff":"#faf8f5", cursor: "pointer", transition: "background 0.1s" }}>
+                                  <td style={{ padding: "7px 8px", color: "#bbb", fontSize: 10, fontWeight: "600" }}>{i+1}</td>
+                                  <td style={{ padding: "7px 8px" }}>
+                                    <div style={{ fontSize: 11, fontWeight: "600", color: "#222", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 130 }}>{job.jobTitle||"—"}</div>
+                                    <div style={{ marginTop: 2 }}><MiniBar value={job.totalPoints} color={gc} /></div>
+                                  </td>
+                                  <td style={{ padding: "7px 8px", textAlign: "center", fontWeight: "bold", color: "#1c2b3a", fontSize: 12 }}>{job.totalPoints}</td>
+                                  <td style={{ padding: "7px 8px", textAlign: "center" }}>
+                                    <span style={{ display: "inline-block", padding: "2px 6px", background: gc, color: "#fff", borderRadius: 3, fontSize: 9, fontWeight: "700" }}>{job.grade}</span>
                                   </td>
                                 </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
+                                {/* Expanded detail rows */}
+                                {isExp && (
+                                  <tr key={`exp-${job.id}`}>
+                                    <td colSpan={4} style={{ padding: 0, borderBottom: "2px solid #1c2b3a" }}>
+                                      {/* Factor breakdown table */}
+                                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10, fontFamily: "sans-serif" }}>
+                                        <tbody>
+                                          {job.groupBreakdown.map((g: any, gi: number) => (
+                                            <>
+                                              <tr key={`g-${gi}`} style={{ background: `${g.color}18` }}>
+                                                <td colSpan={3} style={{ padding: "3px 12px 3px 20px", color: g.color, fontWeight: "700", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em" }}>{g.name}</td>
+                                                <td style={{ padding: "3px 10px", textAlign: "right", color: g.color, fontWeight: "700", fontSize: 9 }}>{g.earned}p</td>
+                                              </tr>
+                                              {g.factors.map((f: any, fi: number) => (
+                                                <tr key={`f-${gi}-${fi}`} style={{ borderBottom: `1px solid ${g.color}15`, background: fi%2===0?"#fff":"#faf8f5" }}>
+                                                  <td style={{ padding: "4px 12px 4px 28px", color: "#555", width: "auto" }} colSpan={2}>{f.name}</td>
+                                                  <td style={{ padding: "4px 8px", textAlign: "center" }}>
+                                                    <span style={{ display: "inline-block", padding: "1px 5px", background: g.color, color: "#fff", borderRadius: 2, fontSize: 9, fontWeight: "700" }}>{f.levelCode ?? `T${f.level}`}</span>
+                                                  </td>
+                                                  <td style={{ padding: "4px 10px", textAlign: "right", fontWeight: "600", color: "#1c2b3a" }}>{f.points}p</td>
+                                                </tr>
+                                              ))}
+                                            </>
+                                          ))}
+                                          <tr style={{ background: "#1c2b3a" }}>
+                                            <td colSpan={2} style={{ padding: "5px 12px 5px 20px", color: "#e8e0d4", fontWeight: "700" }}>{t("Kokku","Total")}</td>
+                                            <td style={{ padding: "5px 8px", textAlign: "center" }}>
+                                              <span style={{ display: "inline-block", padding: "2px 6px", background: gc, color: "#fff", borderRadius: 3, fontSize: 10, fontWeight: "700" }}>{job.grade}</span>
+                                            </td>
+                                            <td style={{ padding: "5px 10px", textAlign: "right", color: "#e8e0d4", fontWeight: "700", fontSize: 12 }}>{job.totalPoints}p</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                      {/* Action buttons */}
+                                      <div style={{ display: "flex", gap: 6, padding: "8px 10px", background: "#f5f0eb", flexWrap: "wrap" }}>
+                                        <button onClick={e => { e.stopPropagation(); exportPDF([job]); }}
+                                          style={{ padding: "4px 9px", background: "#6b1a1a", border: "none", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#f5e8e8" }}>
+                                          PDF
+                                        </button>
+                                        <button onClick={e => { e.stopPropagation(); loadJobForEditing(job); }}
+                                          style={{ padding: "4px 9px", background: editingJobId===job.id?"#e8f0e0":"none", border: "1px solid #b0c8a0", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#4a7a30", fontWeight: editingJobId===job.id?"700":"normal" }}>
+                                          {editingJobId===job.id ? t("✏ Muutmisel...","✏ Editing...") : t("✏ Muuda","✏ Edit")}
+                                        </button>
+                                        <button onClick={e => { e.stopPropagation(); removeJob(job.id); }}
+                                          style={{ padding: "4px 9px", background: "none", border: "1px solid #e0c0c0", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#a05050" }}>
+                                          {t("Kustuta","Remove")}
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                              </>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   </>
                 )}
               </div>
