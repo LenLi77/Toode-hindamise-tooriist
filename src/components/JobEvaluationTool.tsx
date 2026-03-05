@@ -384,7 +384,7 @@ export default function JobEvaluationTool() {
       return [job.companyName, job.evalDate, job.jobTitle, job.totalPoints, job.grade, ...pts, ...lvls];
     })];
     const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `job-evaluations-${new Date().toISOString().slice(0,10)}.csv`;
@@ -1090,43 +1090,70 @@ export default function JobEvaluationTool() {
                 {/* DESCRIPTIONS TAB */}
         {activeTab === "descriptions" && (
           <div>
-            <div style={{ marginBottom: 22 }}>
-              <h2 style={{ margin: 0, fontSize: 20, fontWeight: "normal" }}>{t("Tasemete kirjeldused","Level Descriptions")}</h2>
-              <p style={{ margin: "5px 0 0", fontSize: 12, color: "#888", fontFamily: "sans-serif" }}>
-                {t("Iga faktori tasemete kirjeldused koos näidisametikohtadega.","Descriptions for each factor level with example job titles.")}
-              </p>
+            <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: 20, fontWeight: "normal" }}>{t("Tasemete kirjeldused","Level Descriptions")}</h2>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#888", fontFamily: "sans-serif" }}>
+                  {t("Kliki faktoril kirjelduse nägemiseks.","Click a factor to view its level descriptions.")}
+                </p>
+              </div>
+              <button onClick={() => setOpenFactorDescs({})}
+                style={{ fontSize: 10, fontFamily: "sans-serif", color: "#999", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", paddingBottom: 2 }}>
+                {t("Sulge kõik","Collapse all")}
+              </button>
             </div>
             {factorGroups.map(group => (
-              <div key={group.id} style={{ marginBottom: 28 }}>
-                <h3 style={{ fontSize: 15, fontWeight: "normal", color: group.color, borderBottom: `2px solid ${group.color}`, paddingBottom: 7, marginBottom: 14 }}>{group.name}</h3>
-                {group.factors.map(factor => (
-                  <div key={factor.id} style={{ marginBottom: 14, background: "#fff", border: "1px solid #e0d8ce", borderRadius: 5, overflow: "hidden" }}>
-                    <div style={{ padding: "9px 14px", background: `${group.color}07`, borderBottom: "1px solid #e0d8ce", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: 13, fontWeight: "500" }}>{factor.name}</span>
-                      <span style={{ fontSize: 10, color: "#aaa", fontFamily: "sans-serif" }}>max {factor.maxPoints}p</span>
-                    </div>
-                    <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column", gap: 0 }}>
-                      {factor.levels.map((pts, li) => (
-                        <div key={li} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "9px 0", borderBottom: li < 5 ? "1px solid #f0ebe4" : "none" }}>
-                          <div style={{ width: 52, flexShrink: 0, textAlign: "center", paddingTop: 2 }}>
-                            <div style={{ display: "inline-block", padding: "2px 7px", background: group.color, color: "#fff", borderRadius: 3, fontSize: 10, fontFamily: "sans-serif", fontWeight: "600", marginBottom: 3 }}>{factor.levelCodes?.[li] ?? `T${li+1}`}</div>
-                            <div style={{ fontSize: 12, fontWeight: "bold", color: group.color }}>{pts}p</div>
+              <div key={group.id} style={{ marginBottom: 8 }}>
+                {/* Group label */}
+                <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", color: group.color, fontFamily: "sans-serif", fontWeight: "700", padding: "6px 2px 4px" }}>
+                  {group.name}
+                </div>
+                {/* Factor rows */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  {group.factors.map(factor => {
+                    const isOpen = !!openFactorDescs[factor.id];
+                    return (
+                      <div key={factor.id} style={{ background: "#fff", border: `1px solid ${isOpen ? group.color+"60" : "#e0d8ce"}`, borderRadius: 5, overflow: "hidden" }}>
+                        {/* Collapsed header — always visible */}
+                        <button onClick={() => toggleFactorDesc(factor.id)}
+                          style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", background: isOpen ? `${group.color}08` : "transparent", border: "none", cursor: "pointer", textAlign: "left" }}>
+                          <span style={{ fontSize: 10, color: group.color, display: "inline-block", transform: isOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.15s", flexShrink: 0 }}>&#9654;</span>
+                          <span style={{ flex: 1, fontSize: 12, fontWeight: "500", color: "#222" }}>{factor.name}</span>
+                          {/* Level code chips — compact preview */}
+                          <span style={{ display: "flex", gap: 3, flexShrink: 0 }}>
+                            {factor.levelCodes?.map((code, li) => (
+                              <span key={li} style={{ fontSize: 8, padding: "1px 5px", background: isOpen ? group.color : "#e8e0d4", color: isOpen ? "#fff" : "#888", borderRadius: 2, fontFamily: "sans-serif", fontWeight: "600" }}>{code}</span>
+                            ))}
+                          </span>
+                          <span style={{ fontSize: 10, color: "#bbb", fontFamily: "sans-serif", flexShrink: 0, marginLeft: 4 }}>max {factor.maxPoints}p</span>
+                        </button>
+                        {/* Expanded level descriptions */}
+                        {isOpen && (
+                          <div style={{ borderTop: `1px solid ${group.color}30` }}>
+                            {factor.levels.map((pts, li) => (
+                              <div key={li} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "9px 14px", borderBottom: li < 5 ? `1px solid ${group.color}15` : "none", background: li % 2 === 0 ? "#faf8f5" : "#fff" }}>
+                                <div style={{ width: 48, flexShrink: 0, textAlign: "center", paddingTop: 1 }}>
+                                  <div style={{ display: "inline-block", padding: "2px 6px", background: group.color, color: "#fff", borderRadius: 3, fontSize: 9, fontFamily: "sans-serif", fontWeight: "700" }}>{factor.levelCodes?.[li] ?? `T${li+1}`}</div>
+                                  <div style={{ fontSize: 11, fontWeight: "bold", color: group.color, marginTop: 2 }}>{pts}p</div>
+                                </div>
+                                <div style={{ flex: 1, fontSize: 12, color: "#444", lineHeight: 1.6, fontFamily: "Georgia,serif" }}>
+                                  {factor.descriptions[li] ? factor.descriptions[li].split("\n").map((line: string, lni: number) =>
+                                    line.startsWith("Näited ametikohtadest:")
+                                      ? <div key={lni} style={{ marginTop: 5, fontSize: 11, fontFamily: "sans-serif", color: "#666" }}>
+                                          <span style={{ color: group.color, fontWeight: "600" }}>Näited: </span>
+                                          {line.replace("Näited ametikohtadest: ", "")}
+                                        </div>
+                                      : <div key={lni}>{line}</div>
+                                  ) : <span style={{ color: "#ccc", fontStyle: "italic" }}>—</span>}
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                          <div style={{ flex: 1, fontSize: 12, color: "#444", lineHeight: 1.6, fontFamily: "Georgia,serif" }}>
-                            {factor.descriptions[li] ? factor.descriptions[li].split("\n").map((line, lni) =>
-                              line.startsWith("Näited ametikohtadest:")
-                                ? <div key={lni} style={{ marginTop: 6, fontSize: 11, fontFamily: "sans-serif", color: "#666" }}>
-                                    <span style={{ color: group.color, fontWeight: "600" }}>Näited: </span>
-                                    {line.replace("Näited ametikohtadest: ", "")}
-                                  </div>
-                                : <div key={lni}>{line}</div>
-                            ) : <span style={{ color: "#ccc", fontStyle: "italic" }}>—</span>}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>
