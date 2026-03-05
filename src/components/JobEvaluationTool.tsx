@@ -611,11 +611,8 @@ export default function JobEvaluationTool() {
         <div style={{ maxWidth: 1140, margin: "0 auto", padding: "26px 28px 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
             <div>
-              <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "#9aaa8a", marginBottom: 5, fontFamily: "sans-serif" }}>
-                {t("Töö hindamise meetod","Job Evaluation Method")} · EU Pay Equity Directive
-              </div>
-              <h1 style={{ margin: 0, fontSize: 24, fontWeight: "normal" }}>{t("Tööde hindamise tööriist","Job Evaluation Tool")}</h1>
-              <div style={{ fontSize: 11, color: "#607070", marginTop: 3, fontFamily: "sans-serif" }}>
+              <h1 style={{ margin: 0, fontSize: 24, fontWeight: "normal", color: "#f0ece4" }}>{t("Tööde hindamise tööriist","Job Evaluation Tool")}</h1>
+              <div style={{ fontSize: 11, color: "#c8d0c0", marginTop: 3, fontFamily: "sans-serif" }}>
                 {t("Vastab Majandus- ja Kommunikatsiooniministeeriumi poolt projektis PALK väljatöötatud hindamismudelile.","Complies with the evaluation model developed by the Estonian Ministry of Economic Affairs in the PALK project.")}
               </div>
             </div>
@@ -672,7 +669,7 @@ export default function JobEvaluationTool() {
         </div>
       )}
       {savedJobs.length > 0 && (
-        <div style={{ background: "#1c2b3a", borderBottom: "1px solid #2d3f50", padding: "5px 28px", fontSize: 10, fontFamily: "sans-serif", color: "#607070", display: "flex", gap: 16, alignItems: "center" }}>
+        <div style={{ background: "#1c2b3a", borderBottom: "1px solid #2d3f50", padding: "5px 28px", fontSize: 10, fontFamily: "sans-serif", color: "#a8bca8", display: "flex", gap: 16, alignItems: "center" }}>
           <span>💾 {t("Automaatselt salvestatud","Auto-saved")} · {savedJobs.length} {t("ametikohta","job(s)")}</span>
           <span style={{ color: "#3d5060" }}>|</span>
           <span>{t("Andmed säilivad selles brauseris","Data persists in this browser")} · {t("Ekspordi JSON-fail varundamiseks","Export JSON to back up or share")}</span>
