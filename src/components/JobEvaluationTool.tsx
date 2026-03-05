@@ -47,7 +47,7 @@ const BASE_GROUPS = [
 
 // Grade thresholds are computed dynamically from scale type
 // Linear: equal-width bands. Geometric: each band ~1.45x wider than previous.
-function computeGradeThresholds(scaleType, numGrades = 6, geoRatio = 1.1) {
+function computeGradeThresholds(scaleType: string, numGrades: number = 6, geoRatio: number = 1.1) {
   if (scaleType === "geometric") {
     // Start at 163 (theoretical minimum score — all factors at L1)
     // First band width = 163 * (ratio - 1), so PA1 max = 163 * ratio
@@ -91,7 +91,7 @@ function loadSession() {
   } catch { return null; }
 }
 
-function saveSession(data) {
+function saveSession(data: Record<string, unknown>) {
   try { localStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch {}
 }
 
@@ -99,13 +99,13 @@ function getDefaultWeights() {
   return Object.fromEntries(BASE_GROUPS.map(g => [g.id, g.defaultWeight]));
 }
 
-function getGrade(total, thresholds) {
+function getGrade(total: number, thresholds: {grade:number,min:number,max:number,label:string}[]) {
   return (thresholds || computeGradeThresholds("linear")).find(g => total >= g.min && total <= g.max);
 }
 
 // Derive fully computed groups from base + weights
 // selections store level indices (0-5)
-function computeGroups(baseGroups, weights) {
+function computeGroups(baseGroups: typeof BASE_GROUPS, weights: Record<string, number>) {
   return baseGroups.map(g => {
     const w = weights[g.id] ?? g.defaultWeight;
     const groupMax = w * 10; // weight% * 10 = max points (100% = 1000pts)
@@ -129,7 +129,7 @@ function computeGroups(baseGroups, weights) {
 }
 
 // Recompute a saved job's points from its stored level indices using current groups
-function recomputeJob(job, groups, gradeThresholds) {
+function recomputeJob(job: Record<string, unknown>, groups: ReturnType<typeof computeGroups>, gradeThresholds: ReturnType<typeof computeGradeThresholds>) {
   let total = 0;
   const groupBreakdown = groups.map(g => {
     let groupEarned = 0;
@@ -146,7 +146,7 @@ function recomputeJob(job, groups, gradeThresholds) {
   return { ...job, totalPoints: total, grade: gradeObj?.label, gradeNum: gradeObj?.grade, groupBreakdown };
 }
 
-function MiniBar({ value, max = 1000, color = "#1c2b3a" }) {
+function MiniBar({ value, max = 1000, color = "#1c2b3a" }: { value: number; max?: number; color?: string }) {
   return (
     <div style={{ flex: 1, height: 5, background: "#ede8e0", borderRadius: 3, overflow: "hidden" }}>
       <div style={{ height: "100%", width: `${Math.min(100, (value/max)*100)}%`, background: color, borderRadius: 3 }} />
@@ -220,7 +220,7 @@ export default function JobEvaluationTool() {
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
-        const data = JSON.parse(ev.target.result);
+        const data = JSON.parse(ev.target!.result as string);
         if (!data.version || !Array.isArray(data.savedJobs)) throw new Error("invalid");
         if (data.weights) setWeights(data.weights);
 
