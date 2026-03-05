@@ -393,11 +393,11 @@ export default function JobEvaluationTool() {
 
   // ── PDF EXPORT ──
   async function loadJsPDF() {
-    if (window.jspdf) return window.jspdf.jsPDF;
-    return new Promise((resolve, reject) => {
+    if ((window as any).jspdf) return (window as any).jspdf.jsPDF;
+    return new Promise<any>((resolve, reject) => {
       const s = document.createElement("script");
       s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
-      s.onload = () => resolve(window.jspdf.jsPDF);
+      s.onload = () => resolve((window as any).jspdf.jsPDF);
       s.onerror = reject;
       document.head.appendChild(s);
     });
