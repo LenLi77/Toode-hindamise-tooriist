@@ -870,7 +870,7 @@ export default function JobEvaluationTool() {
                       <button onClick={() => exportPDF(savedJobs)} style={{ padding: "7px 11px", background: "#6b1a1a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#f5e8e8" }}>
                         PDF
                       </button>
-                      <button onClick={exportAllCSV} style={{ padding: "7px 11px", background: "#1a1a1a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#ffffff" }}>
+                      <button onClick={exportAllCSV} style={{ padding: "7px 11px", background: "transparent", border: "1px solid #cccccc", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#555555" }}>
                         ↓ CSV
                       </button>
                     </div>
@@ -889,9 +889,9 @@ export default function JobEvaluationTool() {
                     <div style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 5, overflow: "hidden", maxHeight: "70vh", overflowY: "auto" }}>
                       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "sans-serif" }}>
                         <thead style={{ position: "sticky", top: 0, zIndex: 1 }}>
-                          <tr style={{ background: "#1a1a1a" }}>
+                          <tr style={{ background: "#c8102e" }}>
                             <th style={{ padding: "7px 8px", textAlign: "left", color: "rgba(255,255,255,0.7)", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 22 }}>#</th>
-                            <th style={{ padding: "7px 8px", textAlign: "left", color: "#888888", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em" }}>{t("Ametikoht","Job")}</th>
+                            <th style={{ padding: "7px 8px", textAlign: "left", color: "rgba(255,255,255,0.85)", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em" }}>{t("Ametikoht","Job")}</th>
                             <th style={{ padding: "7px 8px", textAlign: "center", color: "rgba(255,255,255,0.7)", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 44 }}>{t("P","Pts")}</th>
                             <th style={{ padding: "7px 8px", textAlign: "center", color: "rgba(255,255,255,0.7)", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 36 }}>{t("Aste","Grade")}</th>
                           </tr>
@@ -940,7 +940,7 @@ export default function JobEvaluationTool() {
                                               ))}
                                             </>
                                           ))}
-                                          <tr style={{ background: "#1a1a1a" }}>
+                                          <tr style={{ background: "#c8102e" }}>
                                             <td colSpan={2} style={{ padding: "5px 12px 5px 20px", color: "#ffffff", fontWeight: "700" }}>{t("Kokku","Total")}</td>
                                             <td style={{ padding: "5px 8px", textAlign: "center" }}>
                                               <span style={{ display: "inline-block", padding: "2px 6px", background: gc, color: "#fff", borderRadius: 3, fontSize: 10, fontWeight: "700" }}>{job.grade}</span>
