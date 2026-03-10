@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 // Base data: ratios only — point values derived from weights at runtime
 const BASE_GROUPS = [
   {
-    id: "oskused", name: "Oskused", nameEn: "Skills", color: "#1a4a6b",
+    id: "oskused", name: "Oskused", nameEn: "Skills", color: "#1d6fa4",
     minWeight: 25, maxWeight: 40, defaultWeight: 33,
     description: "Suhtlemis- ja empaatiaoskused laste, patsientide ja teiste tundlike sihtrühmadega töötamiseks. Oskus kohandada suhtlust ja töövõtteid erinevate sihtrühmade (nt lapsed, eakad, erivajadustega inimesed, ärritunud kliendid) vajadustele.\n\nKäeline osavus erinevate masinate kasutamisel ja tegevuste käigus (süstide tegemine, osade kokkupanemine, massaažid või ravimeetodid, õmblemine).\n\nKirjade, lepingute, dokumentide, juhendite jms koostamine. Keeleline täpsus ja vastutus ametlikes või tundlikes olukordades (nt valeinfo vältimine, korrektne sõnastus).\n\nArhiivi- ja failisüsteemide loomine ning haldamine. Aruannete ja esitlusmaterjalide vormindamine.\n\nOskus töötada kehtestatud reeglite ja protseduuride piires olukordades, kus eksimisruum on väga väike (nt tervishoid, sotsiaalhoolekanne).\n\nPikaajaline keskendumine arvutiekraanile. Töö mitme inimese või osakonna jaoks korraga ja eri tähtaegadega. Töö tempo hoidmine olukorras, kus töökoormus on ebaregulaarselt jaotunud või raskesti prognoositav.\n\nPsühholoogiline ja emotsionaalne tugi klientidele, patsientidele või lastele. Suhtlemine agressiivsete või ebastabiilsete inimestega. Pidev vajadus emotsioone kontrollida ja professionaalset hoiakut säilitada ka pingelistes või ebameeldivates olukordades.\n\nKoostöö eri osapooltega ilma otsese juhtimisõiguseta. Mitme ülesande täitmine samaaegselt. Vastutus reageerida kiiresti ootamatutele olukordadele ilma täiendava ettevalmistuseta.\n\nFüüsiline koormus (nt laste või patsientide tõstmine, sundasendites töötamine).",
     factors: [
@@ -15,7 +15,7 @@ const BASE_GROUPS = [
     ],
   },
   {
-    id: "pingutus", name: "Pingutus", nameEn: "Effort", color: "#2d6a4f",
+    id: "pingutus", name: "Pingutus", nameEn: "Effort", color: "#1a8a5a",
     minWeight: 15, maxWeight: 30, defaultWeight: 24,
     description: "Müra ja rahvarohkuse tekitatud stress.\n\nKokku puutumine haiguste ja nakkustega.\n\nTöö keskkondades, kus privaatsus ja taastumisvõimalused on piiratud.\n\nKlientide kaebustest või pingelistest teenindussituatsioonidest tulenev stress.\n\nMonotoonsed ülesanded, ebaregulaarsed tööajad, öötöö.\n\nMitmekesised ja ettearvamatud tööülesanded.\n\nPiiratud võimalus tööpäeva jooksul pause teha või töötempot reguleerida.\n\nKokkupuude kahjulike ainetega (nt puhastusvahendid, kemikaalid) ning nende potentsiaalne mõju töötaja tervisele.",
     factors: [
@@ -25,7 +25,7 @@ const BASE_GROUPS = [
     ],
   },
   {
-    id: "vastutus", name: "Vastutus", nameEn: "Responsibility", color: "#6b1a1a",
+    id: "vastutus", name: "Vastutus", nameEn: "Responsibility", color: "#c8102e",
     minWeight: 25, maxWeight: 40, defaultWeight: 33,
     description: "Tundliku info (nt töötajate kohta käiv teave, ärisaladused, koondamised) konfidentsiaalsuse tagamine.\n\nOtsuste tegemine olukordades, kus puuduvad selged juhised ja kus eksimustel võivad olla pikaajalised tagajärjed.\n\nKoosolekute ja konverentside logistika korraldamine.\n\nEakate hooldamine ja laste õpetamine, uute töötajate väljaõpe ja juhendamine.\n\nVastutus teiste inimeste turvalisuse, heaolu või arenguvõimaluste eest, ka ilma ametliku juhistaatuseta.\n\nTöö koordineerimine; ajakavade, protsesside ja varude haldus.\n\nVastutus organisatsiooni maine ja usaldusväärsuse eest klientide, patsientide või avalikkuse ees.",
     factors: [
@@ -35,7 +35,7 @@ const BASE_GROUPS = [
     ],
   },
   {
-    id: "tootingimused", name: "Töötingimused", nameEn: "Working Conditions", color: "#4a3728",
+    id: "tootingimused", name: "Töötingimused", nameEn: "Working Conditions", color: "#7a5c3a",
     minWeight: 5, maxWeight: 15, defaultWeight: 10,
     description: "Müra ja rahvarohkuse tekitatud stress.\n\nKokku puutumine haiguste ja nakkustega.\n\nTöö keskkondades, kus privaatsus ja taastumisvõimalused on piiratud.\n\nKlientide kaebustest või pingelistest teenindussituatsioonidest tulenev stress.\n\nMonotoonsed ülesanded, ebaregulaarsed tööajad, öötöö.\n\nMitmekesised ja ettearvamatud tööülesanded.\n\nPiiratud võimalus tööpäeva jooksul pause teha või töötempot reguleerida.\n\nKokkupuude kahjulike ainetega (nt puhastusvahendid, kemikaalid) ning nende potentsiaalne mõju töötaja tervisele.",
     factors: [
@@ -146,9 +146,9 @@ function recomputeJob(job: any, groups: any, gradeThresholds: any) {
   return { ...job, totalPoints: total, grade: gradeObj?.label, gradeNum: gradeObj?.grade, groupBreakdown };
 }
 
-function MiniBar({ value, max = 1000, color = "#1c2b3a" }: { value: number; max?: number; color?: string }) {
+function MiniBar({ value, max = 1000, color = "#1a1a1a" }: { value: number; max?: number; color?: string }) {
   return (
-    <div style={{ flex: 1, height: 5, background: "#ede8e0", borderRadius: 3, overflow: "hidden" }}>
+    <div style={{ flex: 1, height: 5, background: "#e8e8e8", borderRadius: 3, overflow: "hidden" }}>
       <div style={{ height: "100%", width: `${Math.min(100, (value/max)*100)}%`, background: color, borderRadius: 3 }} />
     </div>
   );
@@ -604,15 +604,15 @@ export default function JobEvaluationTool() {
   const weightsChanged = BASE_GROUPS.some(g => weights[g.id] !== g.defaultWeight);
 
   return (
-    <div style={{ fontFamily: "'Georgia','Times New Roman',serif", minHeight: "100vh", background: "#f5f0eb", color: "#1c1c1c" }}>
+    <div style={{ fontFamily: "'Georgia','Times New Roman',serif", minHeight: "100vh", background: "#f5f5f5", color: "#1c1c1c" }}>
 
       {/* HEADER */}
-      <div style={{ background: "#1c2b3a", color: "#e8e0d4" }}>
+      <div style={{ background: "#ffffff", color: "#1a1a1a" }}>
         <div style={{ maxWidth: 1140, margin: "0 auto", padding: "26px 28px 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
             <div>
-              <h1 style={{ margin: 0, fontSize: 24, fontWeight: "normal", color: "#f0ece4" }}>{t("Tööde hindamise tööriist","Job Evaluation Tool")}</h1>
-              <div style={{ fontSize: 11, color: "#c8d0c0", marginTop: 3, fontFamily: "sans-serif" }}>
+              <h1 style={{ margin: 0, fontSize: 24, fontWeight: "normal", color: "#1a1a1a" }}>{t("Tööde hindamise tööriist","Job Evaluation Tool")}</h1>
+              <div style={{ fontSize: 11, color: "#666666", marginTop: 3, fontFamily: "sans-serif" }}>
                 {t("Vastab Majandus- ja Kommunikatsiooniministeeriumi poolt projektis PALK väljatöötatud hindamismudelile.","Complies with the evaluation model developed by the Estonian Ministry of Economic Affairs in the PALK project.")}
               </div>
             </div>
@@ -620,31 +620,31 @@ export default function JobEvaluationTool() {
               {/* Session controls */}
               <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                 <button onClick={exportSession}
-                  style={{ padding: "5px 12px", background: justSaved?"#9aaa8a":"transparent", color: justSaved?"#1c2b3a":"#9aaa8a", border: "1px solid #9aaa8a", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", transition: "all 0.3s", whiteSpace: "nowrap" }}>
+                  style={{ padding: "5px 12px", background: justSaved?"#c8102e":"transparent", color: justSaved?"#ffffff":"#555555", border: "1px solid #cccccc", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", transition: "all 0.3s", whiteSpace: "nowrap" }}>
                   {justSaved ? "✓ " : "↓ "}{t("Salvesta seanss","Save Session")}
                 </button>
                 <button onClick={() => fileInputRef.current?.click()}
-                  style={{ padding: "5px 12px", background: "transparent", color: "#9aaa8a", border: "1px solid #9aaa8a", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", whiteSpace: "nowrap" }}>
+                  style={{ padding: "5px 12px", background: "transparent", color: "#555555", border: "1px solid #cccccc", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", whiteSpace: "nowrap" }}>
                   ↑ {t("Ava seanss","Open Session")}
                 </button>
                 <input ref={fileInputRef} type="file" accept=".json" onChange={importSession} style={{ display: "none" }} />
                 {savedJobs.length > 0 && (
                   <button onClick={clearSession}
-                    style={{ padding: "5px 10px", background: "transparent", color: "#8a6060", border: "1px solid #8a6060", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif" }}
+                    style={{ padding: "5px 10px", background: "transparent", color: "#999999", border: "1px solid #dddddd", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif" }}
                     title={t("Kustuta kõik andmed","Clear all data")}>✕</button>
                 )}
               </div>
-              <div style={{ width: 1, height: 18, background: "#2d3f50" }} />
+              <div style={{ width: 1, height: 18, background: "#e0e0e0" }} />
               {/* Lang toggle */}
               <div style={{ display: "flex", gap: 4 }}>
                 {["et","en"].map(l => (
                   <button key={l} onClick={() => setLang(l)}
-                    style={{ padding: "4px 11px", background: lang===l?"#9aaa8a":"transparent", color: lang===l?"#1c2b3a":"#9aaa8a", border: "1px solid #9aaa8a", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", textTransform: "uppercase" }}>{l}</button>
+                    style={{ padding: "4px 11px", background: lang===l?"#c8102e":"transparent", color: lang===l?"#ffffff":"#555555", border: "1px solid #cccccc", borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", textTransform: "uppercase" }}>{l}</button>
                 ))}
               </div>
             </div>
           </div>
-          <div style={{ display: "flex", marginTop: 20, borderBottom: "1px solid #2d3f50" }}>
+          <div style={{ display: "flex", marginTop: 20, borderBottom: "1px solid #e0e0e0" }}>
             {[
               { id: "evaluate",     label: t("Hindamine","Evaluate") },
               { id: "weights",      label: t("Faktorite kaalud","Factor Weights") + (weightsChanged ? " ●" : "") },
@@ -653,7 +653,7 @@ export default function JobEvaluationTool() {
             ].map(tab => (
               <button key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                style={{ padding: "9px 18px", background: "none", border: "none", borderBottom: activeTab===tab.id?"2px solid #9aaa8a":"2px solid transparent", color: activeTab===tab.id?"#e8e0d4":"#7a8a9a", cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", letterSpacing: "0.04em", marginBottom: -1, whiteSpace: "nowrap" }}>
+                style={{ padding: "9px 18px", background: "none", border: "none", borderBottom: activeTab===tab.id?"2px solid #c8102e":"2px solid transparent", color: activeTab===tab.id?"#1a1a1a":"#888888", cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", letterSpacing: "0.04em", marginBottom: -1, whiteSpace: "nowrap" }}>
                 {tab.label}
               </button>
             ))}
@@ -669,7 +669,7 @@ export default function JobEvaluationTool() {
         </div>
       )}
       {savedJobs.length > 0 && (
-        <div style={{ background: "#1c2b3a", borderBottom: "1px solid #2d3f50", padding: "5px 28px", fontSize: 10, fontFamily: "sans-serif", color: "#a8bca8", display: "flex", gap: 16, alignItems: "center" }}>
+        <div style={{ background: "#f8f8f8", borderBottom: "1px solid #e8e8e8", padding: "5px 28px", fontSize: 10, fontFamily: "sans-serif", color: "#999999", display: "flex", gap: 16, alignItems: "center" }}>
           <span>💾 {t("Automaatselt salvestatud","Auto-saved")} · {savedJobs.length} {t("ametikohta","job(s)")}</span>
           <span style={{ color: "#3d5060" }}>|</span>
           <span>{t("Andmed säilivad selles brauseris","Data persists in this browser")} · {t("Ekspordi JSON-fail varundamiseks","Export JSON to back up or share")}</span>
@@ -683,7 +683,7 @@ export default function JobEvaluationTool() {
             {/* LEFT: form */}
             <div style={{ flex: "1 1 0", minWidth: 0 }}>
               {weightsChanged && (
-                <div style={{ marginBottom: 14, padding: "8px 14px", background: "#fff8e6", border: "1px solid #e8d48a", borderRadius: 5, fontSize: 11, fontFamily: "sans-serif", color: "#7a6010", display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ marginBottom: 14, padding: "8px 14px", background: "#fff8e6", border: "1px solid #f0d060", borderRadius: 5, fontSize: 11, fontFamily: "sans-serif", color: "#7a6010", display: "flex", alignItems: "center", gap: 8 }}>
                   <span>⚖️</span>
                   <span>{t("Kasutatakse kohandatud faktorikaalusid.","Using custom factor weights.")} <button onClick={() => { setActiveTab("weights"); }} style={{ background: "none", border: "none", cursor: "pointer", color: "#7a6010", textDecoration: "underline", fontSize: 11, fontFamily: "sans-serif", padding: 0 }}>{t("Vaata kaalusid →","View weights →")}</button></span>
                 </div>
@@ -693,22 +693,22 @@ export default function JobEvaluationTool() {
                 <div style={{ flex: "1 1 150px" }}>
                   <label style={{ display: "block", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#777", fontFamily: "sans-serif", marginBottom: 4 }}>{t("Ettevõte","Company")}</label>
                   <input value={companyName} onChange={e => setCompanyName(e.target.value)} placeholder={t("Ettevõtte nimi...","Company name...")}
-                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #c8bfb0", borderRadius: 4, fontSize: 13, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box" }} />
+                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #d8d8d8", borderRadius: 4, fontSize: 13, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box" }} />
                 </div>
                 <div style={{ flex: "1 1 150px" }}>
                   <label style={{ display: "block", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#777", fontFamily: "sans-serif", marginBottom: 4 }}>{t("Ametikoht","Job Title")}</label>
                   <input value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder={t("Ametikoha nimetus...","Job title...")}
-                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #c8bfb0", borderRadius: 4, fontSize: 13, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box" }} />
+                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #d8d8d8", borderRadius: 4, fontSize: 13, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box" }} />
                 </div>
                 <div style={{ flex: "1 1 150px" }}>
                   <label style={{ display: "block", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#777", fontFamily: "sans-serif", marginBottom: 4 }}>{t("Hindaja","Evaluator")}</label>
                   <input value={evaluatorName} onChange={e => setEvaluatorName(e.target.value)} placeholder={t("Hindaja nimi...","Evaluator name...")}
-                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #c8bfb0", borderRadius: 4, fontSize: 13, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box" }} />
+                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #d8d8d8", borderRadius: 4, fontSize: 13, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box" }} />
                 </div>
                 <div style={{ flex: "0 0 130px" }}>
                   <label style={{ display: "block", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#777", fontFamily: "sans-serif", marginBottom: 4 }}>{t("Kuupäev","Date")}</label>
                   <input type="date" value={evalDate} onChange={e => setEvalDate(e.target.value)}
-                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #c8bfb0", borderRadius: 4, fontSize: 12, fontFamily: "sans-serif", background: "#fff", boxSizing: "border-box" }} />
+                    style={{ width: "100%", padding: "8px 11px", border: "1px solid #d8d8d8", borderRadius: 4, fontSize: 12, fontFamily: "sans-serif", background: "#fff", boxSizing: "border-box" }} />
                 </div>
               </div>
               {/* Comment field */}
@@ -717,7 +717,7 @@ export default function JobEvaluationTool() {
                 <textarea value={jobComment} onChange={e => setJobComment(e.target.value)}
                   placeholder={t("Märkused, põhjendused, kontekst...","Notes, justifications, context...")}
                   rows={2}
-                  style={{ width: "100%", padding: "8px 11px", border: "1px solid #c8bfb0", borderRadius: 4, fontSize: 12, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box", resize: "vertical", lineHeight: 1.5 }} />
+                  style={{ width: "100%", padding: "8px 11px", border: "1px solid #d8d8d8", borderRadius: 4, fontSize: 12, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box", resize: "vertical", lineHeight: 1.5 }} />
               </div>
 
               {/* Save button at top — shown when all selected */}
@@ -730,7 +730,7 @@ export default function JobEvaluationTool() {
                     </button>
                   ) : (
                     <button onClick={saveAndNext}
-                      style={{ padding: "7px 16px", background: "#1c2b3a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", color: "#e8e0d4", fontWeight: "500" }}>
+                      style={{ padding: "7px 16px", background: "#c8102e", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", color: "#ffffff", fontWeight: "500" }}>
                       {t("Salvesta ja hinda järgmist →","Save & Evaluate Next →")}
                     </button>
                   )}
@@ -738,24 +738,24 @@ export default function JobEvaluationTool() {
               )}
 
               {/* Live score bar */}
-              <div style={{ background: "#fff", border: "1px solid #d8cfC0", borderRadius: 5, padding: "12px 16px", marginBottom: 20, display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
+              <div style={{ background: "#fff", border: "1px solid #e0e0e0", borderRadius: 5, padding: "12px 16px", marginBottom: 20, display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
                 <div>
                   <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", color: "#999", fontFamily: "sans-serif" }}>{t("Punktid","Points")}</div>
-                  <div style={{ fontSize: 26, fontWeight: "bold", color: "#1c2b3a", lineHeight: 1.1 }}>{totalPoints} <span style={{ fontSize: 13, color: "#bbb", fontWeight: "normal" }}>/ 1000</span></div>
+                  <div style={{ fontSize: 26, fontWeight: "bold", color: "#1a1a1a", lineHeight: 1.1 }}>{totalPoints} <span style={{ fontSize: 13, color: "#bbb", fontWeight: "normal" }}>/ 1000</span></div>
                 </div>
                 <div style={{ flex: 1, minWidth: 100 }}>
-                  <div style={{ height: 6, background: "#ede8e0", borderRadius: 3, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${progressPct}%`, background: "#1c2b3a", borderRadius: 3, transition: "width 0.3s" }} />
+                  <div style={{ height: 6, background: "#e8e8e8", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${progressPct}%`, background: "#c8102e", borderRadius: 3, transition: "width 0.3s" }} />
                   </div>
                 </div>
                 <div>
                   <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", color: "#999", fontFamily: "sans-serif" }}>{t("Palgaaste","Grade")}</div>
-                  <div style={{ fontSize: 20, fontWeight: "bold", color: allSelected?"#1c2b3a":"#ccc" }}>{allSelected ? grade?.label : "—"}</div>
+                  <div style={{ fontSize: 20, fontWeight: "bold", color: allSelected?"#1a1a1a":"#cccccc" }}>{allSelected ? grade?.label : "—"}</div>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {groupTotals.map(g => (
                     <div key={g.id} style={{ textAlign: "center" }}>
-                      <div style={{ width: 34, height: 34, borderRadius: "50%", background: g.allSelected?g.color:"#ede8e0", color: g.allSelected?"#fff":"#ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: "bold", margin: "0 auto 2px", transition: "background 0.3s" }}>{g.earned}</div>
+                      <div style={{ width: 34, height: 34, borderRadius: "50%", background: g.allSelected?g.color:"#e8e8e8", color: g.allSelected?"#fff":"#ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: "bold", margin: "0 auto 2px", transition: "background 0.3s" }}>{g.earned}</div>
                       <div style={{ fontSize: 7, textTransform: "uppercase", letterSpacing: "0.1em", color: "#aaa", fontFamily: "sans-serif" }}>{g.name.slice(0,4)}</div>
                     </div>
                   ))}
@@ -776,8 +776,8 @@ export default function JobEvaluationTool() {
                       const selectedLi = selections[factor.id];
                       const selectedPts = selectedLi !== undefined ? factor.levels[selectedLi] : undefined;
                       return (
-                        <div key={factor.id} style={{ background: "#fff", border: "1px solid #e0d8ce", borderRadius: 5, overflow: "hidden" }}>
-                          <div style={{ padding: "8px 13px", background: selectedLi!==undefined?`${group.color}07`:"transparent", borderBottom: "1px solid #e0d8ce", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div key={factor.id} style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 5, overflow: "hidden" }}>
+                          <div style={{ padding: "8px 13px", background: selectedLi!==undefined?`${group.color}07`:"transparent", borderBottom: "1px solid #e8e8e8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <span style={{ fontSize: 12, fontWeight: "500" }}>{factor.name}</span>
                             <span style={{ fontSize: 10, fontFamily: "sans-serif", color: selectedLi!==undefined?group.color:"#ccc", fontWeight: selectedLi!==undefined?"bold":"normal" }}>
                               {selectedLi !== undefined ? `${selectedPts} / ${factor.maxPoints}p` : t("Valimata","—")}
@@ -786,12 +786,12 @@ export default function JobEvaluationTool() {
                           {factor.factorDescription && (
                             <div>
                               <button onClick={() => toggleFactorDesc(factor.id)}
-                                style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", cursor: "pointer", padding: "4px 13px", fontSize: 10, fontFamily: "sans-serif", color: "#999", width: "100%", textAlign: "left", borderBottom: "1px solid #e0d8ce" }}>
+                                style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", cursor: "pointer", padding: "4px 13px", fontSize: 10, fontFamily: "sans-serif", color: "#999", width: "100%", textAlign: "left", borderBottom: "1px solid #e8e8e8" }}>
                                 <span style={{ fontSize: 9, display: "inline-block", transform: openFactorDescs[factor.id] ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>&#9654;</span>
                                 {openFactorDescs[factor.id] ? t("Peida kirjeldus","Hide description") : t("Näita kirjeldust","Show description")}
                               </button>
                               {openFactorDescs[factor.id] && (
-                                <div style={{ padding: "10px 14px", background: `${group.color}06`, borderBottom: "1px solid #e0d8ce", fontSize: 11, color: "#555", lineHeight: 1.65, fontFamily: "Georgia,serif", fontStyle: "italic" }}>
+                                <div style={{ padding: "10px 14px", background: `${group.color}06`, borderBottom: "1px solid #e8e8e8", fontSize: 11, color: "#555", lineHeight: 1.65, fontFamily: "Georgia,serif", fontStyle: "italic" }}>
                                   {factor.factorDescription}
                                 </div>
                               )}
@@ -804,7 +804,7 @@ export default function JobEvaluationTool() {
                               return (
                                 <button key={li} onClick={() => handleSelect(factor.id, li)}
                                   title={hasDesc ? factor.descriptions[li].replace(/\\n/g, '\n') : `${t("Tase","Level")} ${li+1}: ${pts}p`}
-                                  style={{ flex: 1, padding: "8px 2px", background: isSel?group.color:"transparent", border: "none", borderRight: li<5?"1px solid #e0d8ce":"none", cursor: "pointer", transition: "background 0.12s", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+                                  style={{ flex: 1, padding: "8px 2px", background: isSel?group.color:"transparent", border: "none", borderRight: li<5?"1px solid #e8e8e8":"none", cursor: "pointer", transition: "background 0.12s", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
                                   <span style={{ fontSize: 7, textTransform: "uppercase", letterSpacing: "0.08em", color: isSel?"rgba(255,255,255,0.7)":"#ccc", fontFamily: "sans-serif" }}>{factor.levelCodes?.[li] ?? `T${li+1}`}</span>
                                   <span style={{ fontSize: 12, fontWeight: "bold", color: isSel?"#fff":"#444" }}>{pts}</span>
                                   {hasDesc && <span style={{ width: 3, height: 3, borderRadius: "50%", background: isSel?"rgba(255,255,255,0.5)":group.color }} />}
@@ -813,7 +813,7 @@ export default function JobEvaluationTool() {
                             })}
                           </div>
                           {selectedLi !== undefined && factor.descriptions[selectedLi]?.trim() && (
-                            <div style={{ padding: "8px 13px", background: `${group.color}05`, borderTop: "1px solid #e0d8ce", fontSize: 11, color: "#555", lineHeight: 1.55 }}>
+                            <div style={{ padding: "8px 13px", background: `${group.color}05`, borderTop: "1px solid #e8e8e8", fontSize: 11, color: "#555", lineHeight: 1.55 }}>
                               {factor.descriptions[selectedLi].split('\n').map((line, li2) =>
                                 line.startsWith('Näited ametikohtadest:')
                                   ? <div key={li2} style={{ marginTop: 5, color: group.color, fontStyle: "normal", fontWeight: "500" }}>
@@ -833,7 +833,7 @@ export default function JobEvaluationTool() {
 
               {/* Action buttons */}
               {editingJobId && (
-                <div style={{ marginTop: 6, padding: "10px 14px", background: "#fffbe6", border: "1px solid #e8d88a", borderRadius: 5, fontSize: 11, fontFamily: "sans-serif", color: "#7a6010", display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ marginTop: 6, padding: "10px 14px", background: "#fff8e6", border: "1px solid #f0d060", borderRadius: 5, fontSize: 11, fontFamily: "sans-serif", color: "#7a6010", display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 14 }}>✏️</span>
                   <span>{t("Muutad salvestatud ametikohta","Editing a saved job")} — <strong>{savedJobs.find(j=>j.id===editingJobId)?.jobTitle||"—"}</strong></span>
                   <button onClick={clearForm} style={{ marginLeft: "auto", padding: "3px 9px", background: "none", border: "1px solid #c8b860", borderRadius: 3, cursor: "pointer", fontSize: 10, color: "#7a6010" }}>{t("Tühista muutmine","Cancel edit")}</button>
@@ -841,16 +841,16 @@ export default function JobEvaluationTool() {
               )}
               <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 8 }}>
                 {!editingJobId && (
-                  <button onClick={clearForm} style={{ padding: "9px 16px", background: "#fff", border: "1px solid #c8bfb0", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", color: "#666" }}>{t("Lähtesta","Reset")}</button>
+                  <button onClick={clearForm} style={{ padding: "9px 16px", background: "#fff", border: "1px solid #d8d8d8", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", color: "#666" }}>{t("Lähtesta","Reset")}</button>
                 )}
                 {editingJobId ? (
                   <button onClick={saveEdits} disabled={!allSelected}
-                    style={{ padding: "9px 20px", background: allSelected?"#5a7a3a":"#ddd", border: "none", borderRadius: 4, cursor: allSelected?"pointer":"not-allowed", fontSize: 12, fontFamily: "sans-serif", color: allSelected?"#fff":"#aaa", fontWeight: "500" }}>
+                    style={{ padding: "9px 20px", background: allSelected?"#1a8a5a":"#dddddd", border: "none", borderRadius: 4, cursor: allSelected?"pointer":"not-allowed", fontSize: 12, fontFamily: "sans-serif", color: allSelected?"#fff":"#aaa", fontWeight: "500" }}>
                     {t("Salvesta muudatused ✓","Save Changes ✓")}
                   </button>
                 ) : (
                   <button onClick={saveAndNext} disabled={!allSelected}
-                    style={{ padding: "9px 20px", background: allSelected?"#1c2b3a":"#ddd", border: "none", borderRadius: 4, cursor: allSelected?"pointer":"not-allowed", fontSize: 12, fontFamily: "sans-serif", color: allSelected?"#e8e0d4":"#aaa", fontWeight: "500" }}>
+                    style={{ padding: "9px 20px", background: allSelected?"#c8102e":"#dddddd", border: "none", borderRadius: 4, cursor: allSelected?"pointer":"not-allowed", fontSize: 12, fontFamily: "sans-serif", color: allSelected?"#ffffff":"#aaaaaa", fontWeight: "500" }}>
                     {t("Salvesta ja hinda järgmist →","Save & Evaluate Next →")}
                   </button>
                 )}
@@ -863,21 +863,21 @@ export default function JobEvaluationTool() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                   <div>
                     <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.14em", color: "#999", fontFamily: "sans-serif" }}>{t("Hinnatud ametikohad","Evaluated Jobs")}</div>
-                    <div style={{ fontSize: 22, fontWeight: "bold", color: "#1c2b3a" }}>{savedJobs.length}</div>
+                    <div style={{ fontSize: 22, fontWeight: "bold", color: "#1a1a1a" }}>{savedJobs.length}</div>
                   </div>
                   {savedJobs.length > 0 && (
                     <div style={{ display: "flex", gap: 5 }}>
                       <button onClick={() => exportPDF(savedJobs)} style={{ padding: "7px 11px", background: "#6b1a1a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#f5e8e8" }}>
                         PDF
                       </button>
-                      <button onClick={exportAllCSV} style={{ padding: "7px 11px", background: "#1c2b3a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#e8e0d4" }}>
+                      <button onClick={exportAllCSV} style={{ padding: "7px 11px", background: "#1a1a1a", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#ffffff" }}>
                         ↓ CSV
                       </button>
                     </div>
                   )}
                 </div>
                 {savedJobs.length === 0 ? (
-                  <div style={{ background: "#fff", border: "1px dashed #d8d0c8", borderRadius: 6, padding: "28px 16px", textAlign: "center" }}>
+                  <div style={{ background: "#fff", border: "1px dashed #dddddd", borderRadius: 6, padding: "28px 16px", textAlign: "center" }}>
                     <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.2 }}>📋</div>
                     <div style={{ fontSize: 12, color: "#bbb", fontFamily: "sans-serif", lineHeight: 1.5 }}>
                       {t("Hinda ametikoht ja vajuta\n\"Salvesta ja hinda järgmist\"","Complete an evaluation and click\n\"Save & Evaluate Next\"")}
@@ -886,14 +886,14 @@ export default function JobEvaluationTool() {
                 ) : (
                   <>
                     {/* Unified ranked table with expandable rows */}
-                    <div style={{ background: "#fff", border: "1px solid #e0d8ce", borderRadius: 5, overflow: "hidden", maxHeight: "70vh", overflowY: "auto" }}>
+                    <div style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 5, overflow: "hidden", maxHeight: "70vh", overflowY: "auto" }}>
                       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "sans-serif" }}>
                         <thead style={{ position: "sticky", top: 0, zIndex: 1 }}>
-                          <tr style={{ background: "#1c2b3a" }}>
-                            <th style={{ padding: "7px 8px", textAlign: "left", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 22 }}>#</th>
-                            <th style={{ padding: "7px 8px", textAlign: "left", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em" }}>{t("Ametikoht","Job")}</th>
-                            <th style={{ padding: "7px 8px", textAlign: "center", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 44 }}>{t("P","Pts")}</th>
-                            <th style={{ padding: "7px 8px", textAlign: "center", color: "#9aaa8a", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 36 }}>{t("Aste","Grade")}</th>
+                          <tr style={{ background: "#1a1a1a" }}>
+                            <th style={{ padding: "7px 8px", textAlign: "left", color: "rgba(255,255,255,0.7)", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 22 }}>#</th>
+                            <th style={{ padding: "7px 8px", textAlign: "left", color: "#888888", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em" }}>{t("Ametikoht","Job")}</th>
+                            <th style={{ padding: "7px 8px", textAlign: "center", color: "rgba(255,255,255,0.7)", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 44 }}>{t("P","Pts")}</th>
+                            <th style={{ padding: "7px 8px", textAlign: "center", color: "rgba(255,255,255,0.7)", fontWeight: "600", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", width: 36 }}>{t("Aste","Grade")}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -905,13 +905,13 @@ export default function JobEvaluationTool() {
                                 {/* Main row */}
                                 <tr key={job.id}
                                   onClick={() => setExpandedJob(isExp ? null : job.id)}
-                                  style={{ borderBottom: isExp ? "none" : "1px solid #ede8e0", background: isExp ? "#f0ebe3" : editingJobId===job.id ? "#f0f7ea" : i%2===0?"#fff":"#faf8f5", cursor: "pointer", transition: "background 0.1s" }}>
+                                  style={{ borderBottom: isExp ? "none" : "1px solid #e8e8e8", background: isExp ? "#fff0f0" : editingJobId===job.id ? "#f0f8f0" : i%2===0?"#fff":"#fafafa", cursor: "pointer", transition: "background 0.1s" }}>
                                   <td style={{ padding: "7px 8px", color: "#bbb", fontSize: 10, fontWeight: "600" }}>{i+1}</td>
                                   <td style={{ padding: "7px 8px" }}>
                                     <div style={{ fontSize: 11, fontWeight: "600", color: "#222", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 130 }}>{job.jobTitle||"—"}</div>
                                     <div style={{ marginTop: 2 }}><MiniBar value={job.totalPoints} color={gc} /></div>
                                   </td>
-                                  <td style={{ padding: "7px 8px", textAlign: "center", fontWeight: "bold", color: "#1c2b3a", fontSize: 12 }}>{job.totalPoints}</td>
+                                  <td style={{ padding: "7px 8px", textAlign: "center", fontWeight: "bold", color: "#1a1a1a", fontSize: 12 }}>{job.totalPoints}</td>
                                   <td style={{ padding: "7px 8px", textAlign: "center" }}>
                                     <span style={{ display: "inline-block", padding: "2px 6px", background: gc, color: "#fff", borderRadius: 3, fontSize: 9, fontWeight: "700" }}>{job.grade}</span>
                                   </td>
@@ -919,7 +919,7 @@ export default function JobEvaluationTool() {
                                 {/* Expanded detail rows */}
                                 {isExp && (
                                   <tr key={`exp-${job.id}`}>
-                                    <td colSpan={4} style={{ padding: 0, borderBottom: "2px solid #1c2b3a" }}>
+                                    <td colSpan={4} style={{ padding: 0, borderBottom: "2px solid #c8102e" }}>
                                       {/* Factor breakdown table */}
                                       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10, fontFamily: "sans-serif" }}>
                                         <tbody>
@@ -930,33 +930,33 @@ export default function JobEvaluationTool() {
                                                 <td style={{ padding: "3px 10px", textAlign: "right", color: g.color, fontWeight: "700", fontSize: 9 }}>{g.earned}p</td>
                                               </tr>
                                               {g.factors.map((f: any, fi: number) => (
-                                                <tr key={`f-${gi}-${fi}`} style={{ borderBottom: `1px solid ${g.color}15`, background: fi%2===0?"#fff":"#faf8f5" }}>
+                                                <tr key={`f-${gi}-${fi}`} style={{ borderBottom: `1px solid ${g.color}15`, background: fi%2===0?"#fff":"#fafafa" }}>
                                                   <td style={{ padding: "4px 12px 4px 28px", color: "#555", width: "auto" }} colSpan={2}>{f.name}</td>
                                                   <td style={{ padding: "4px 8px", textAlign: "center" }}>
                                                     <span style={{ display: "inline-block", padding: "1px 5px", background: g.color, color: "#fff", borderRadius: 2, fontSize: 9, fontWeight: "700" }}>{f.levelCode ?? `T${f.level}`}</span>
                                                   </td>
-                                                  <td style={{ padding: "4px 10px", textAlign: "right", fontWeight: "600", color: "#1c2b3a" }}>{f.points}p</td>
+                                                  <td style={{ padding: "4px 10px", textAlign: "right", fontWeight: "600", color: "#1a1a1a" }}>{f.points}p</td>
                                                 </tr>
                                               ))}
                                             </>
                                           ))}
-                                          <tr style={{ background: "#1c2b3a" }}>
-                                            <td colSpan={2} style={{ padding: "5px 12px 5px 20px", color: "#e8e0d4", fontWeight: "700" }}>{t("Kokku","Total")}</td>
+                                          <tr style={{ background: "#1a1a1a" }}>
+                                            <td colSpan={2} style={{ padding: "5px 12px 5px 20px", color: "#ffffff", fontWeight: "700" }}>{t("Kokku","Total")}</td>
                                             <td style={{ padding: "5px 8px", textAlign: "center" }}>
                                               <span style={{ display: "inline-block", padding: "2px 6px", background: gc, color: "#fff", borderRadius: 3, fontSize: 10, fontWeight: "700" }}>{job.grade}</span>
                                             </td>
-                                            <td style={{ padding: "5px 10px", textAlign: "right", color: "#e8e0d4", fontWeight: "700", fontSize: 12 }}>{job.totalPoints}p</td>
+                                            <td style={{ padding: "5px 10px", textAlign: "right", color: "#ffffff", fontWeight: "700", fontSize: 12 }}>{job.totalPoints}p</td>
                                           </tr>
                                         </tbody>
                                       </table>
                                       {/* Action buttons */}
-                                      <div style={{ display: "flex", gap: 6, padding: "8px 10px", background: "#f5f0eb", flexWrap: "wrap" }}>
+                                      <div style={{ display: "flex", gap: 6, padding: "8px 10px", background: "#f5f5f5", flexWrap: "wrap" }}>
                                         <button onClick={e => { e.stopPropagation(); exportPDF([job]); }}
                                           style={{ padding: "4px 9px", background: "#6b1a1a", border: "none", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#f5e8e8" }}>
                                           PDF
                                         </button>
                                         <button onClick={e => { e.stopPropagation(); loadJobForEditing(job); }}
-                                          style={{ padding: "4px 9px", background: editingJobId===job.id?"#e8f0e0":"none", border: "1px solid #b0c8a0", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#4a7a30", fontWeight: editingJobId===job.id?"700":"normal" }}>
+                                          style={{ padding: "4px 9px", background: editingJobId===job.id?"#e8f8f0":"none", border: "1px solid #a0d4b8", borderRadius: 3, cursor: "pointer", fontSize: 10, fontFamily: "sans-serif", color: "#1a8a5a", fontWeight: editingJobId===job.id?"700":"normal" }}>
                                           {editingJobId===job.id ? t("✏ Muutmisel...","✏ Editing...") : t("✏ Muuda","✏ Edit")}
                                         </button>
                                         <button onClick={e => { e.stopPropagation(); removeJob(job.id); }}
@@ -992,7 +992,7 @@ export default function JobEvaluationTool() {
               </div>
               {weightsChanged && (
                 <button onClick={resetWeights}
-                  style={{ padding: "7px 14px", background: "#fff", border: "1px solid #c8bfb0", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#666", flexShrink: 0, marginLeft: 16 }}>
+                  style={{ padding: "7px 14px", background: "#fff", border: "1px solid #d8d8d8", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: "sans-serif", color: "#666", flexShrink: 0, marginLeft: 16 }}>
                   {t("Lähtesta vaikimisi","Reset to Default")}
                 </button>
               )}
@@ -1002,7 +1002,7 @@ export default function JobEvaluationTool() {
             <div style={{ margin: "18px 0 24px", padding: "12px 18px", background: "#fff", border: `1px solid ${Math.abs(totalWeight-100)>2?"#e0a070":"#c8d8b0"}`, borderRadius: 6, display: "flex", alignItems: "center", gap: 16, fontFamily: "sans-serif" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "#888", marginBottom: 4 }}>{t("Kaalude summa","Total Weight")}</div>
-                <div style={{ height: 8, background: "#ede8e0", borderRadius: 4, overflow: "hidden", position: "relative" }}>
+                <div style={{ height: 8, background: "#e8e8e8", borderRadius: 4, overflow: "hidden", position: "relative" }}>
                   <div style={{ position: "absolute", left: "100%", top: -2, bottom: -2, width: 1, background: "#aaa" }} />
                   {BASE_GROUPS.map((g, i) => {
                     const left = BASE_GROUPS.slice(0,i).reduce((s,bg) => s+(weights[bg.id]??bg.defaultWeight), 0);
@@ -1011,7 +1011,7 @@ export default function JobEvaluationTool() {
                   })}
                 </div>
               </div>
-              <div style={{ fontSize: 24, fontWeight: "bold", color: Math.abs(totalWeight-100)>2?"#c05020":"#2a5a1a", minWidth: 60, textAlign: "right" }}>
+              <div style={{ fontSize: 24, fontWeight: "bold", color: Math.abs(totalWeight-100)>2?"#cc2222":"#1a8a5a", minWidth: 60, textAlign: "right" }}>
                 {totalWeight}%
               </div>
               {Math.abs(totalWeight-100) > 2 && (
@@ -1022,7 +1022,7 @@ export default function JobEvaluationTool() {
             </div>
 
             {savedJobs.length > 0 && (
-              <div style={{ marginBottom: 20, padding: "9px 14px", background: "#f0f5e8", border: "1px solid #b8d0a0", borderRadius: 5, fontSize: 11, fontFamily: "sans-serif", color: "#3a6020" }}>
+              <div style={{ marginBottom: 20, padding: "9px 14px", background: "#f0f8f4", border: "1px solid #a0d4b8", borderRadius: 5, fontSize: 11, fontFamily: "sans-serif", color: "#1a6a40" }}>
                 ℹ️ {t(`Kaalude muutmisel arvutatakse ${savedJobs.length} salvestatud ametikoha tulemus automaatselt ümber.`,`Changing weights will automatically recalculate scores for ${savedJobs.length} saved job(s).`)}
               </div>
             )}
@@ -1040,7 +1040,7 @@ export default function JobEvaluationTool() {
                         <div style={{ fontSize: 11, color: "#aaa", fontFamily: "sans-serif", marginTop: 2 }}>{g.nameEn} · {t("max","max")} {groupMax} {t("punkti","pts")}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 26, fontWeight: "bold", color: isChanged?g.color:"#1c2b3a", lineHeight: 1 }}>{currentW}%</div>
+                        <div style={{ fontSize: 26, fontWeight: "bold", color: isChanged?g.color:"#1a1a1a", lineHeight: 1 }}>{currentW}%</div>
                         {isChanged && (
                           <div style={{ fontSize: 10, color: "#888", fontFamily: "sans-serif" }}>
                             {t("vaikimisi","default")}: {g.defaultWeight}%
@@ -1066,14 +1066,14 @@ export default function JobEvaluationTool() {
                       <span>{t("lubatud maksimum","allowed max")}: {g.maxWeight}%</span>
                     </div>
                     {/* Factor sub-breakdown */}
-                    <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #ede8e0" }}>
+                    <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #e8e8e8" }}>
                       <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", color: "#bbb", fontFamily: "sans-serif", marginBottom: 6 }}>{t("Alamfaktorid","Sub-factors")}</div>
                       {g.factors.map(f => {
                         const fMax = Math.round(f.factorRatio * groupMax);
                         return (
                           <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                             <div style={{ width: 160, fontSize: 11, color: "#555", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.name}</div>
-                            <div style={{ flex: 1, height: 4, background: "#ede8e0", borderRadius: 2, overflow: "hidden" }}>
+                            <div style={{ flex: 1, height: 4, background: "#e8e8e8", borderRadius: 2, overflow: "hidden" }}>
                               <div style={{ height: "100%", width: `${(fMax/groupMax)*100}%`, background: g.color, opacity: 0.5, borderRadius: 2 }} />
                             </div>
                             <div style={{ width: 48, fontSize: 10, color: "#888", fontFamily: "sans-serif", textAlign: "right" }}>{fMax}p</div>
@@ -1123,7 +1123,7 @@ export default function JobEvaluationTool() {
                           {/* Level code chips — compact preview */}
                           <span style={{ display: "flex", gap: 3, flexShrink: 0 }}>
                             {factor.levelCodes?.map((code, li) => (
-                              <span key={li} style={{ fontSize: 8, padding: "1px 5px", background: isOpen ? group.color : "#e8e0d4", color: isOpen ? "#fff" : "#888", borderRadius: 2, fontFamily: "sans-serif", fontWeight: "600" }}>{code}</span>
+                              <span key={li} style={{ fontSize: 8, padding: "1px 5px", background: isOpen ? group.color : "#eeeeee", color: isOpen ? "#fff" : "#888", borderRadius: 2, fontFamily: "sans-serif", fontWeight: "600" }}>{code}</span>
                             ))}
                           </span>
                           <span style={{ fontSize: 10, color: "#bbb", fontFamily: "sans-serif", flexShrink: 0, marginLeft: 4 }}>max {factor.maxPoints}p</span>
@@ -1132,7 +1132,7 @@ export default function JobEvaluationTool() {
                         {isOpen && (
                           <div style={{ borderTop: `1px solid ${group.color}30` }}>
                             {factor.levels.map((pts, li) => (
-                              <div key={li} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "9px 14px", borderBottom: li < 5 ? `1px solid ${group.color}15` : "none", background: li % 2 === 0 ? "#faf8f5" : "#fff" }}>
+                              <div key={li} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "9px 14px", borderBottom: li < 5 ? `1px solid ${group.color}15` : "none", background: li % 2 === 0 ? "#fafafa" : "#fff" }}>
                                 <div style={{ width: 48, flexShrink: 0, textAlign: "center", paddingTop: 1 }}>
                                   <div style={{ display: "inline-block", padding: "2px 6px", background: group.color, color: "#fff", borderRadius: 3, fontSize: 9, fontFamily: "sans-serif", fontWeight: "700" }}>{factor.levelCodes?.[li] ?? `T${li+1}`}</div>
                                   <div style={{ fontSize: 11, fontWeight: "bold", color: group.color, marginTop: 2 }}>{pts}p</div>
@@ -1173,32 +1173,32 @@ export default function JobEvaluationTool() {
               <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "stretch" }}>
                 {/* Linear option */}
                 <div onClick={() => setScaleType("linear")}
-                  style={{ padding: "12px 16px", background: scaleType === "linear" ? "#1c2b3a" : "#fff", border: scaleType === "linear" ? "2px solid #1c2b3a" : "1px solid #c8bfb0", borderRadius: 5, cursor: "pointer", minWidth: 200, flex: "1 1 200px" }}>
-                  <div style={{ fontSize: 13, fontWeight: "600", color: scaleType === "linear" ? "#e8e0d4" : "#333", fontFamily: "sans-serif", marginBottom: 8 }}>{t("Lineaarne","Linear")}</div>
+                  style={{ padding: "12px 16px", background: scaleType === "linear" ? "#fff5f5" : "#fff", border: scaleType === "linear" ? "2px solid #c8102e" : "1px solid #d8d8d8", borderRadius: 5, cursor: "pointer", minWidth: 200, flex: "1 1 200px" }}>
+                  <div style={{ fontSize: 13, fontWeight: "600", color: scaleType === "linear" ? "#c8102e" : "#333333", fontFamily: "sans-serif", marginBottom: 8 }}>{t("Lineaarne","Linear")}</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <label style={{ fontSize: 10, color: scaleType === "linear" ? "#9aaa8a" : "#888", fontFamily: "sans-serif", whiteSpace: "nowrap" }}>{t("Astmeid","Grades")}</label>
+                    <label style={{ fontSize: 10, color: scaleType === "linear" ? "#c8102e" : "#888888", fontFamily: "sans-serif", whiteSpace: "nowrap" }}>{t("Astmeid","Grades")}</label>
                     <input type="range" min={3} max={10} step={1} value={linearNumGrades}
                       onClick={e => e.stopPropagation()}
                       onChange={e => { setScaleType("linear"); setLinearNumGrades(Number(e.target.value)); }}
-                      style={{ flex: 1, accentColor: scaleType === "linear" ? "#9aaa8a" : "#1c2b3a" }} />
-                    <span style={{ fontSize: 13, fontWeight: "700", color: scaleType === "linear" ? "#e8e0d4" : "#1c2b3a", fontFamily: "sans-serif", minWidth: 16, textAlign: "right" }}>{linearNumGrades}</span>
+                      style={{ flex: 1, accentColor: scaleType === "linear" ? "#c8102e" : "#cccccc" }} />
+                    <span style={{ fontSize: 13, fontWeight: "700", color: scaleType === "linear" ? "#1a1a1a" : "#1a1a1a", fontFamily: "sans-serif", minWidth: 16, textAlign: "right" }}>{linearNumGrades}</span>
                   </div>
-                  <div style={{ fontSize: 10, color: scaleType === "linear" ? "#9aaa8a" : "#aaa", fontFamily: "sans-serif", marginTop: 6 }}>
+                  <div style={{ fontSize: 10, color: scaleType === "linear" ? "#c8102e" : "#aaaaaa", fontFamily: "sans-serif", marginTop: 6 }}>
                     {t("Vahemiku laius","Band width")}: ~{Math.round(1000 / linearNumGrades)}p
                   </div>
                 </div>
 
                 {/* Geometric option */}
                 <div onClick={() => setScaleType("geometric")}
-                  style={{ padding: "12px 16px", background: scaleType === "geometric" ? "#1c2b3a" : "#fff", border: scaleType === "geometric" ? "2px solid #1c2b3a" : "1px solid #c8bfb0", borderRadius: 5, cursor: "pointer", minWidth: 200, flex: "1 1 200px" }}>
-                  <div style={{ fontSize: 13, fontWeight: "600", color: scaleType === "geometric" ? "#e8e0d4" : "#333", fontFamily: "sans-serif", marginBottom: 8 }}>{t("Proportsionaalne","Proportional")}</div>
+                  style={{ padding: "12px 16px", background: scaleType === "geometric" ? "#fff5f5" : "#fff", border: scaleType === "geometric" ? "2px solid #c8102e" : "1px solid #d8d8d8", borderRadius: 5, cursor: "pointer", minWidth: 200, flex: "1 1 200px" }}>
+                  <div style={{ fontSize: 13, fontWeight: "600", color: scaleType === "geometric" ? "#c8102e" : "#333333", fontFamily: "sans-serif", marginBottom: 8 }}>{t("Proportsionaalne","Proportional")}</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <label style={{ fontSize: 10, color: scaleType === "geometric" ? "#9aaa8a" : "#888", fontFamily: "sans-serif", whiteSpace: "nowrap" }}>{t("Kordaja","Ratio")}</label>
+                    <label style={{ fontSize: 10, color: scaleType === "geometric" ? "#c8102e" : "#888888", fontFamily: "sans-serif", whiteSpace: "nowrap" }}>{t("Kordaja","Ratio")}</label>
                     <input type="range" min={1.1} max={2.0} step={0.05} value={geoRatio}
                       onClick={e => e.stopPropagation()}
                       onChange={e => { setScaleType("geometric"); setGeoRatio(Number(e.target.value)); }}
-                      style={{ flex: 1, accentColor: scaleType === "geometric" ? "#9aaa8a" : "#1c2b3a" }} />
-                    <span style={{ fontSize: 13, fontWeight: "700", color: scaleType === "geometric" ? "#e8e0d4" : "#1c2b3a", fontFamily: "sans-serif", minWidth: 28, textAlign: "right" }}>×{geoRatio.toFixed(2)}</span>
+                      style={{ flex: 1, accentColor: scaleType === "geometric" ? "#c8102e" : "#cccccc" }} />
+                    <span style={{ fontSize: 13, fontWeight: "700", color: scaleType === "geometric" ? "#1a1a1a" : "#1a1a1a", fontFamily: "sans-serif", minWidth: 28, textAlign: "right" }}>×{geoRatio.toFixed(2)}</span>
                   </div>
                   <div style={{ fontSize: 10, fontFamily: "sans-serif", marginTop: 6 }}>
                     {(() => {
@@ -1208,7 +1208,7 @@ export default function JobEvaluationTool() {
                       const lastW = tg[n-1].max - tg[n-1].min + 1;
                       const warn = n < 5;
                       return (<>
-                        <span style={{ color: scaleType === "geometric" ? "#9aaa8a" : "#aaa" }}>
+                        <span style={{ color: scaleType === "geometric" ? "#c8102e" : "#aaaaaa" }}>
                           {`${t("Astmeid","Grades")}: ${n} · PA1 ${pa1w}p · PA${n} ${lastW}p`}
                         </span>
                         {warn && <span style={{ marginLeft: 8, color: "#b85c00", fontWeight: 600 }}>
@@ -1226,12 +1226,12 @@ export default function JobEvaluationTool() {
                   const thresholds = computeGradeThresholds(type, linearNumGrades, geoRatio);
                   const isActive = scaleType === type;
                   return (
-                    <div key={type} style={{ background: "#fff", border: `1px solid ${isActive ? "#1c2b3a" : "#e0d8ce"}`, borderRadius: 5, overflow: "hidden", opacity: isActive ? 1 : 0.55 }}>
-                      <div style={{ padding: "8px 14px", background: isActive ? "#1c2b3a" : "#f5f0eb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ fontSize: 11, fontFamily: "sans-serif", fontWeight: "600", color: isActive ? "#9aaa8a" : "#888", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                    <div key={type} style={{ background: "#fff", border: `1px solid ${isActive ? "#c8102e" : "#e8e8e8"}`, borderRadius: 5, overflow: "hidden", opacity: isActive ? 1 : 0.55 }}>
+                      <div style={{ padding: "8px 14px", background: isActive ? "#c8102e" : "#f5f5f5", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: 11, fontFamily: "sans-serif", fontWeight: "600", color: isActive ? "rgba(255,255,255,0.8)" : "#888", textTransform: "uppercase", letterSpacing: "0.1em" }}>
                           {type === "linear" ? t("Lineaarne","Linear") : t("Proportsionaalne","Proportional")}
                         </span>
-                        {isActive && <span style={{ fontSize: 9, color: "#9aaa8a", fontFamily: "sans-serif" }}>● {t("aktiivne","active")}</span>}
+                        {isActive && <span style={{ fontSize: 9, color: "#c8102e", fontFamily: "sans-serif" }}>● {t("aktiivne","active")}</span>}
                       </div>
                       <div style={{ padding: "8px 0" }}>
                         {thresholds.map((g, i) => {
@@ -1242,7 +1242,7 @@ export default function JobEvaluationTool() {
                             <div key={g.grade} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 14px" }}>
                               <div style={{ width: 28, height: 22, borderRadius: 3, background: gc, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: "700", fontFamily: "sans-serif", flexShrink: 0 }}>{g.label}</div>
                               <div style={{ flex: 1 }}>
-                                <div style={{ height: 6, background: "#ede8e0", borderRadius: 3, overflow: "hidden" }}>
+                                <div style={{ height: 6, background: "#e8e8e8", borderRadius: 3, overflow: "hidden" }}>
                                   <div style={{ height: "100%", width: `${pct}%`, background: gc, borderRadius: 3 }} />
                                 </div>
                               </div>
@@ -1258,13 +1258,13 @@ export default function JobEvaluationTool() {
 
               {/* Impact on saved jobs */}
               {savedJobs.length > 0 && (
-                <div style={{ background: "#fff", border: "1px solid #e0d8ce", borderRadius: 5, overflow: "hidden", marginBottom: 24 }}>
-                  <div style={{ padding: "8px 14px", background: "#1c2b3a", color: "#9aaa8a", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.14em", fontFamily: "sans-serif" }}>
+                <div style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 5, overflow: "hidden", marginBottom: 24 }}>
+                  <div style={{ padding: "8px 14px", background: "#c8102e", color: "rgba(255,255,255,0.85)", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.14em", fontFamily: "sans-serif" }}>
                     {t("Mõju hinnatud ametikohtadele","Impact on evaluated jobs")}
                   </div>
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "sans-serif" }}>
                     <thead>
-                      <tr style={{ background: "#f5f0eb" }}>
+                      <tr style={{ background: "#f5f5f5" }}>
                         <th style={{ padding: "7px 14px", textAlign: "left", color: "#666", fontWeight: "600", fontSize: 10 }}>{t("Ametikoht","Job")}</th>
                         <th style={{ padding: "7px 14px", textAlign: "center", color: "#666", fontWeight: "600", fontSize: 10 }}>{t("Punktid","Points")}</th>
                         <th style={{ padding: "7px 14px", textAlign: "center", color: "#666", fontWeight: "600", fontSize: 10 }}>{t("Lineaarne","Linear")}</th>
@@ -1277,13 +1277,13 @@ export default function JobEvaluationTool() {
                         const geoGrade = getGrade(job.totalPoints, computeGradeThresholds("geometric", linearNumGrades, geoRatio));
                         const differs = linGrade?.grade !== geoGrade?.grade;
                         return (
-                          <tr key={job.id} style={{ borderBottom: "1px solid #ede8e0", background: i%2===0?"#fff":"#faf8f5" }}>
+                          <tr key={job.id} style={{ borderBottom: "1px solid #eeeeee", background: i%2===0?"#fff":"#fafafa" }}>
                             <td style={{ padding: "7px 14px", color: "#333" }}>{job.jobTitle || "—"}</td>
-                            <td style={{ padding: "7px 14px", textAlign: "center", fontWeight: "bold", color: "#1c2b3a" }}>{job.totalPoints}</td>
+                            <td style={{ padding: "7px 14px", textAlign: "center", fontWeight: "bold", color: "#1a1a1a" }}>{job.totalPoints}</td>
                             {[linGrade, geoGrade].map((g, gi) => (
                               <td key={gi} style={{ padding: "7px 14px", textAlign: "center" }}>
                                 <span style={{ display: "inline-block", padding: "2px 8px", background: GRADE_COLORS[g?.grade]||"#ccc", color: "#fff", borderRadius: 3, fontSize: 10, fontWeight: "600",
-                                  outline: differs && ((scaleType==="linear"&&gi===0)||(scaleType==="geometric"&&gi===1)) ? "2px solid #1c2b3a" : "none",
+                                  outline: differs && ((scaleType==="linear"&&gi===0)||(scaleType==="geometric"&&gi===1)) ? "2px solid #c8102e" : "none",
                                   outlineOffset: 1 }}>{g?.label || "—"}</span>
                               </td>
                             ))}
@@ -1305,8 +1305,8 @@ export default function JobEvaluationTool() {
               )}
 
               {/* Future: data-driven grading note */}
-              <div style={{ padding: "14px 18px", background: "#f5f0eb", border: "1px solid #e0d8ce", borderRadius: 5, fontSize: 12, fontFamily: "sans-serif", color: "#666", lineHeight: 1.6 }}>
-                <div style={{ fontWeight: "600", color: "#1c2b3a", marginBottom: 4, fontSize: 13 }}>
+              <div style={{ padding: "14px 18px", background: "#f5f5f5", border: "1px solid #e8e8e8", borderRadius: 5, fontSize: 12, fontFamily: "sans-serif", color: "#666", lineHeight: 1.6 }}>
+                <div style={{ fontWeight: "600", color: "#1a1a1a", marginBottom: 4, fontSize: 13 }}>
                   💡 {t("Tulevikus: andmepõhised palgaklassid","Future: data-driven grade boundaries")}
                 </div>
                 {t(
