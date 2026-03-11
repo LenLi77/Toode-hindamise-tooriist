@@ -185,6 +185,14 @@ export default function JobEvaluationTool() {
   const [geoRatio, setGeoRatio] = useState(() => { const s = loadSession(); return s?.geoRatio ?? 1.1; });
   const gradeThresholds = useMemo(() => computeGradeThresholds(scaleType, linearNumGrades, geoRatio), [scaleType, linearNumGrades, geoRatio]);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   // Recompute saved job grades when scale type changes
   useEffect(() => {
     setSavedJobs(prev => prev.map(job => {
@@ -608,15 +616,15 @@ export default function JobEvaluationTool() {
 
       {/* HEADER */}
       <div style={{ background: "#ffffff", color: "#1a1a1a" }}>
-        <div style={{ maxWidth: 1140, margin: "0 auto", padding: "26px 28px 0" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ maxWidth: 1140, margin: "0 auto", padding: isMobile ? "16px 16px 0" : "26px 28px 0" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: isMobile ? 8 : 12 }}>
             <div>
-              <h1 style={{ margin: 0, fontSize: 24, fontWeight: "normal", color: "#1a1a1a" }}>{t("Tööde hindamise tööriist","Job Evaluation Tool")}</h1>
+              <h1 style={{ margin: 0, fontSize: isMobile ? 20 : 24, fontWeight: "normal", color: "#1a1a1a" }}>{t("Tööde hindamise tööriist","Job Evaluation Tool")}</h1>
               <div style={{ fontSize: 11, color: "#666666", marginTop: 3, fontFamily: "sans-serif" }}>
                 {t("Vastab Majandus- ja Kommunikatsiooniministeeriumi poolt projektis PALK väljatöötatud hindamismudelile.","Complies with the evaluation model developed by the Estonian Ministry of Economic Affairs in the PALK project.")}
               </div>
             </div>
-            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", gap: isMobile ? 6 : 10, alignItems: "center", flexWrap: "wrap", justifyContent: isMobile ? "flex-start" : "flex-end" }}>
               {/* Session controls */}
               <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                 <button onClick={exportSession}
@@ -644,7 +652,7 @@ export default function JobEvaluationTool() {
               </div>
             </div>
           </div>
-          <div style={{ display: "flex", marginTop: 20, borderBottom: "1px solid #e0e0e0" }}>
+          <div style={{ display: "flex", marginTop: isMobile ? 12 : 20, borderBottom: "1px solid #e0e0e0", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
             {[
               { id: "evaluate",     label: t("Hindamine","Evaluate") },
               { id: "weights",      label: t("Faktorite kaalud","Factor Weights") + (weightsChanged ? " ●" : "") },
@@ -653,7 +661,7 @@ export default function JobEvaluationTool() {
             ].map(tab => (
               <button key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                style={{ padding: "9px 18px", background: "none", border: "none", borderBottom: activeTab===tab.id?"2px solid #c8102e":"2px solid transparent", color: activeTab===tab.id?"#1a1a1a":"#888888", cursor: "pointer", fontSize: 12, fontFamily: "sans-serif", letterSpacing: "0.04em", marginBottom: -1, whiteSpace: "nowrap" }}>
+                style={{ padding: isMobile ? "8px 12px" : "9px 18px", background: "none", border: "none", borderBottom: activeTab===tab.id?"2px solid #c8102e":"2px solid transparent", color: activeTab===tab.id?"#1a1a1a":"#888888", cursor: "pointer", fontSize: isMobile ? 11 : 12, fontFamily: "sans-serif", letterSpacing: "0.04em", marginBottom: -1, whiteSpace: "nowrap" }}>
                 {tab.label}
               </button>
             ))}
@@ -670,18 +678,18 @@ export default function JobEvaluationTool() {
       )}
       {savedJobs.length > 0 && (
         <div style={{ background: "#f8f8f8", borderBottom: "1px solid #e8e8e8", fontSize: 10, fontFamily: "sans-serif", color: "#777777" }}>
-          <div style={{ maxWidth: 1140, margin: "0 auto", padding: "5px 28px", display: "flex", gap: 16, alignItems: "center" }}>
+          <div style={{ maxWidth: 1140, margin: "0 auto", padding: isMobile ? "5px 16px" : "5px 28px", display: "flex", gap: 16, alignItems: "center" }}>
             <span>💾 {t("Automaatselt salvestatud","Auto-saved")} · {savedJobs.length} {t("ametikohta","job(s)")}</span>
             <span style={{ color: "#aaaaaa" }}>|</span>
             <span>{t("Andmed säilivad selles brauseris","Data persists in this browser")} · {t("Ekspordi JSON-fail varundamiseks","Export JSON to back up or share")}</span>
           </div>
         </div>
       )}
-      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "28px 28px" }}>
+      <div style={{ maxWidth: 1140, margin: "0 auto", padding: isMobile ? "16px 16px" : "28px 28px" }}>
 
         {/* EVALUATE TAB */}
         {activeTab === "evaluate" && (
-          <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: 24, alignItems: "flex-start", flexDirection: isMobile ? "column" : "row" }}>
             {/* LEFT: form */}
             <div style={{ flex: "1 1 0", minWidth: 0 }}>
               {weightsChanged && (
@@ -707,7 +715,7 @@ export default function JobEvaluationTool() {
                   <input value={evaluatorName} onChange={e => setEvaluatorName(e.target.value)} placeholder={t("Hindaja nimi...","Evaluator name...")}
                     style={{ width: "100%", padding: "8px 11px", border: "1px solid #d8d8d8", borderRadius: 4, fontSize: 13, fontFamily: "Georgia,serif", background: "#fff", boxSizing: "border-box" }} />
                 </div>
-                <div style={{ flex: "0 0 130px" }}>
+                <div style={{ flex: isMobile ? "1 1 100%" : "0 0 130px" }}>
                   <label style={{ display: "block", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#777", fontFamily: "sans-serif", marginBottom: 4 }}>{t("Kuupäev","Date")}</label>
                   <input type="date" value={evalDate} onChange={e => setEvalDate(e.target.value)}
                     style={{ width: "100%", padding: "8px 11px", border: "1px solid #d8d8d8", borderRadius: 4, fontSize: 12, fontFamily: "sans-serif", background: "#fff", boxSizing: "border-box" }} />
@@ -740,7 +748,7 @@ export default function JobEvaluationTool() {
               )}
 
               {/* Live score bar */}
-              <div style={{ background: "#fff", border: "1px solid #e0e0e0", borderRadius: 5, padding: "12px 16px", marginBottom: 20, display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap" }}>
+              <div style={{ background: "#fff", border: "1px solid #e0e0e0", borderRadius: 5, padding: "12px 16px", marginBottom: 20, display: "flex", gap: isMobile ? 12 : 18, alignItems: "center", flexWrap: "wrap" }}>
                 <div>
                   <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: "0.12em", color: "#777", fontFamily: "sans-serif" }}>{t("Punktid","Points")}</div>
                   <div style={{ fontSize: 26, fontWeight: "bold", color: "#1a1a1a", lineHeight: 1.1 }}>{totalPoints} <span style={{ fontSize: 13, color: "#999", fontWeight: "normal" }}>/ 1000</span></div>
@@ -806,7 +814,7 @@ export default function JobEvaluationTool() {
                               return (
                                 <button key={li} onClick={() => handleSelect(factor.id, li)}
                                   title={hasDesc ? factor.descriptions[li].replace(/\\n/g, '\n') : `${t("Tase","Level")} ${li+1}: ${pts}p`}
-                                  style={{ flex: 1, padding: "8px 2px", background: isSel?group.color:"transparent", border: "none", borderRight: li<5?"1px solid #e8e8e8":"none", cursor: "pointer", transition: "background 0.12s", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+                                  style={{ flex: 1, padding: isMobile ? "10px 2px" : "8px 2px", background: isSel?group.color:"transparent", border: "none", borderRight: li<5?"1px solid #e8e8e8":"none", cursor: "pointer", transition: "background 0.12s", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
                                   <span style={{ fontSize: 7, textTransform: "uppercase", letterSpacing: "0.08em", color: isSel?"rgba(255,255,255,0.7)":"#ccc", fontFamily: "sans-serif" }}>{factor.levelCodes?.[li] ?? `T${li+1}`}</span>
                                   <span style={{ fontSize: 12, fontWeight: "bold", color: isSel?"#fff":"#444" }}>{pts}</span>
                                   {hasDesc && <span style={{ width: 3, height: 3, borderRadius: "50%", background: isSel?"rgba(255,255,255,0.5)":group.color }} />}
@@ -860,8 +868,8 @@ export default function JobEvaluationTool() {
             </div>
 
             {/* RIGHT: saved jobs panel */}
-            <div style={{ flex: "0 0 300px", minWidth: 260 }}>
-              <div style={{ position: "sticky", top: 20 }}>
+            <div style={{ flex: isMobile ? "1 1 auto" : "0 0 300px", minWidth: isMobile ? 0 : 260, width: isMobile ? "100%" : "auto" }}>
+              <div style={{ position: isMobile ? "static" : "sticky", top: 20 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                   <div>
                     <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.14em", color: "#777", fontFamily: "sans-serif" }}>{t("Hinnatud ametikohad","Evaluated Jobs")}</div>
@@ -888,7 +896,7 @@ export default function JobEvaluationTool() {
                 ) : (
                   <>
                     {/* Unified ranked table with expandable rows */}
-                    <div style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 5, overflow: "hidden", maxHeight: "70vh", overflowY: "auto" }}>
+                    <div style={{ background: "#fff", border: "1px solid #e8e8e8", borderRadius: 5, overflow: "hidden", maxHeight: isMobile ? "none" : "70vh", overflowY: isMobile ? "visible" : "auto" }}>
                       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, fontFamily: "sans-serif" }}>
                         <thead style={{ position: "sticky", top: 0, zIndex: 1 }}>
                           <tr style={{ background: "#c8102e" }}>
