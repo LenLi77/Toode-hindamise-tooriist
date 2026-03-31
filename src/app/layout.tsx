@@ -1,10 +1,14 @@
-import type { Metadata } from "next";
+iimport type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Ametikohtade hindamine | Job Evaluation Tool",
   description: "Töö hindamise tööriist palgaõigluse direktiivi jaoks",
-  images: ["/og-image.png"],
-  url: "https://jobevaluation.hrpulse.ee",
+  openGraph: {
+    title: "Ametikohtade hindamine | Job Evaluation Tool",
+    description: "Töö hindamise tööriist palgaõigluse direktiivi jaoks",
+    images: ["/og-image.png"],
+    url: "https://jobevaluation.hrpulse.ee",
+  },
 };
 
 export default function RootLayout({
@@ -14,9 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="et">
-      <body style={{ margin: 0, padding: 0, background: "#f5f0eb" }}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
